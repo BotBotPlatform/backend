@@ -6,6 +6,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Zizaco\Entrust\Traits\EntrustUserTrait;
 use JWTAuth;
 use App\Models\PasswordReset;
+use App\Mail\PasswordResetMail;
 use Carbon\Carbon;
 use Mail;
 
@@ -50,12 +51,9 @@ class User extends Authenticatable
         $reset->created_at = Carbon::now();
         $reset->token = $token;
         $reset->save();
-        $user = $this;
+        // $user = $this;
         //Send Emails
-        Mail::queue('emails.passwordreset', ['user' => $user, 'token' => $reset->token], function ($email) use($user) {
-            $email->from('noreply@botbot.com');
-            $email->subject("BotBot Password Reset");
-            $email->to($user->email);
-        });
+
+        Mail::to($this->email)->queue(new PasswordResetMail($reset));
     }
 }
