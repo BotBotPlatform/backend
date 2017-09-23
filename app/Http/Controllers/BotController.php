@@ -42,4 +42,19 @@ class BotController extends Controller
       $bot = Auth::user()->bot;
       return ['message' => 'success', 'bot' => $bot];
   }
+
+  public function deleteBot(Request $request) {
+      $validator = Validator::make($request->all(), [
+      ]);
+      if ($validator->fails()) {
+          return ['message' => 'validation', 'errors' => $validator->errors()];
+      }
+
+      $bot = Auth::user()->bot;
+      if(count($bot) <= 0) {
+        return response()->json(['message' => 'no_bot_exists'],400);
+      }
+      $bot->delete();
+      return ['message' => 'success'];
+  }
 }

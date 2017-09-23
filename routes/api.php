@@ -24,4 +24,5 @@ Route::group(['prefix' => 'user'], function() {
 Route::group(['prefix' => 'bot', 'middleware' => 'jwt.auth'], function() {
 	Route::get('', 'BotController@getBot');
 	Route::post('', 'BotController@createBot');
+	Route::delete('', 'BotController@deleteBot');
 });
