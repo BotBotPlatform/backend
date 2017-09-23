@@ -20,3 +20,8 @@ Route::group(['prefix' => 'user'], function() {
 	Route::post('reset/store', 'AuthController@performPasswordReset');
 	Route::post('reset', 'AuthController@sendPasswordReset');
 });
+
+Route::group(['prefix' => 'bot', 'middleware' => 'jwt.auth'], function() {
+	Route::get('', 'BotController@getBot');
+	Route::post('', 'BotController@createBot');
+});

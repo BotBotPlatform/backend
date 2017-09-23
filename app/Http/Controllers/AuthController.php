@@ -89,7 +89,7 @@ class AuthController extends Controller
         if(count($reset) < 1) {
           return ['message' => 'invalid_token'];
         }
-        
+
         if (Carbon::parse($reset->created_at)->addHour(48)->lte(Carbon::now())) {
             return ['message' => 'expired'];
         }

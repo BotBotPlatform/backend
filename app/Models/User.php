@@ -9,12 +9,13 @@ use App\Models\PasswordReset;
 use App\Mail\PasswordResetMail;
 use Carbon\Carbon;
 use Mail;
+use Auth;
 
 class User extends Authenticatable
 {
     use Notifiable;
     use EntrustUserTrait;
-    
+
     /**
      * The attributes that are mass assignable.
      *
@@ -55,5 +56,9 @@ class User extends Authenticatable
         //Send Emails
 
         Mail::to($this->email)->queue(new PasswordResetMail($reset));
+    }
+
+    public function Bot() {
+      return $this->hasOne('App\Models\Bot');
     }
 }
