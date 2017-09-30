@@ -52,7 +52,6 @@ class ReloadBot implements ShouldQueue
          } else {
            //Success
            $bot->deploy_status = "alive";
-           $bot->port = null;
            $bot->save();
          }
      }
