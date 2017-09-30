@@ -8,6 +8,8 @@ use App\Models\Bot;
 use Uuid;
 use Auth;
 use App\Jobs\SpinUpBot;
+use App\Jobs\ShutDownBot;
+use App\Jobs\ReloadBot;
 
 class BotController extends Controller
 {
@@ -63,6 +65,17 @@ class BotController extends Controller
     $this->dispatch(new SpinUpBot(Auth::user()));
     return ['message' => 'success'];
   }
+
+  public function shutDownBot(Request $request) {
+    $this->dispatch(new ShutDownBot(Auth::user()));
+    return ['message' => 'success'];
+  }
+
+  public function reloadBot(Request $request) {
+    $this->dispatch(new ReloadBot(Auth::user()));
+    return ['message' => 'success'];
+  }
+
 
   public static function getFreePort() {
     while(true) {

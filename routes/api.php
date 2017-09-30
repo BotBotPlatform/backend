@@ -26,4 +26,6 @@ Route::group(['prefix' => 'bot', 'middleware' => 'jwt.auth'], function() {
 	Route::post('', 'BotController@createBot');
 	Route::delete('', 'BotController@deleteBot');
 	Route::post('spinUp', 'BotController@spinUpBot');
+	Route::post('shutDown', 'BotController@shutDownBot');
+	Route::post('reloadBot', 'BotController@reloadBot');
 });
