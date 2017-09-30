@@ -10,6 +10,7 @@ use Auth;
 use App\Jobs\SpinUpBot;
 use App\Jobs\ShutDownBot;
 use App\Jobs\ReloadBot;
+use \GuzzleHttp\Client;
 
 class BotController extends Controller
 {
@@ -88,5 +89,22 @@ class BotController extends Controller
       }
     }
 
+  }
+
+  public function forwardBotMessage(Request $request) {
+    //Figure out the bot from the request
+    $bot = Bot::where('uuid',$request->uuid)->first();
+    if(count($bot) <= 0) {
+      return response()->json(['message' => 'no_bot_exists'], 400);
+    }
+    if($bot->port == null || $bot->deploy_status !== "alive") {
+      return response()->json(['message' => 'bot_offline'], 400);
+    }
+    //Forward this request to a local node instance
+    $client = new Client();
+    $res = $client->request('POST', 'localhost:'.$bot->port, [
+        'auth' => ['user', 'pass']
+    ]);
+    return $res->getBody();
   }
 }

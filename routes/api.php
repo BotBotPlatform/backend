@@ -29,3 +29,8 @@ Route::group(['prefix' => 'bot', 'middleware' => 'jwt.auth'], function() {
 	Route::post('shutDown', 'BotController@shutDownBot');
 	Route::post('reloadBot', 'BotController@reloadBot');
 });
+
+//Forwarding for bots
+Route::group(['prefix' => 'facebook'], function() {
+	Route::get('{uuid}', 'BotController@forwardBotMessage');
+});
