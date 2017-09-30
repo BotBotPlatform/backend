@@ -37,7 +37,7 @@ class SpinUpBot implements ShouldQueue
         //Check that user has a bot
         $bot = $this->user->bot;
         if(count($bot) <= 0) {
-          throw new Exception("User ".$this->user->email."does not have a bot");
+          throw new ProcessFailedException("User ".$this->user->email."does not have a bot");
         }
 
         //Check if process is running
