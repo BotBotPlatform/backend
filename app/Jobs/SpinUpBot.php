@@ -44,7 +44,7 @@ class SpinUpBot implements ShouldQueue
 
         //Check if process is running
         $newPort = BotController::getFreePort();
-        $downloadCommand = "pm2 start ".getenv(NODE_PATH)." --name=".$bot->uuid." -- ".$newPort;
+        $downloadCommand = "pm2 start ".getenv('NODE_PATH')." --name=".$bot->uuid." -- ".$newPort;
         $process = new Process($downloadCommand);
         $process->run();
         if (!$process->isSuccessful()) {
