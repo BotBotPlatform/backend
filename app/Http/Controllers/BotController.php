@@ -63,4 +63,17 @@ class BotController extends Controller
     $this->dispatch(new SpinUpBot(Auth::user()));
     return ['message' => 'success'];
   }
+
+  public static function getFreePort() {
+    while(true) {
+      $tempPort = rand(8050,9000);
+      $bot = Bot::where('port',$tempPort)->first();
+      if(count($bot) > 0) {
+        //This port is already taken
+      } else {
+        return $tempPort;
+      }
+    }
+
+  }
 }

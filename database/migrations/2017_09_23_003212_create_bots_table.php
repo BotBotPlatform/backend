@@ -17,6 +17,10 @@ class CreateBotsTable extends Migration
           $table->increments('id');
           $table->uuid('uuid');
 
+          $table->integer('port')->nullable();
+          $table->string('deploy_status')->default('offline');
+          $table->timestamp('heartbeat')->nullable();
+
           $table->boolean('bot_enabled')->default(false);
           $table->boolean('shopify_enabled')->default(false);
 
