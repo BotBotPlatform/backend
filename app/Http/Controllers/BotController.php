@@ -7,6 +7,7 @@ use Validator;
 use App\Models\Bot;
 use Uuid;
 use Auth;
+use App\Jobs\SpinUpBot;
 
 class BotController extends Controller
 {
@@ -56,5 +57,10 @@ class BotController extends Controller
       }
       $bot->delete();
       return ['message' => 'success'];
+  }
+
+  public function spinUpBot(Request $request) {
+    $this->dispatch(new SpinUpBot(Auth::user()));
+    return ['message' => 'success'];
   }
 }
