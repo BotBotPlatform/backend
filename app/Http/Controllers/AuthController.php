@@ -23,7 +23,6 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|unique:users|max:127',
             'password' => 'required|min:6',
             'email'    => 'required|email|unique:users',
         ]);
@@ -32,7 +31,6 @@ class AuthController extends Controller
         }
 
         $user = new User;
-        $user->name = $request->name;
         $user->password = Hash::make($request->password);
         $user->email = $request->email;
         $user->save();
@@ -49,17 +47,16 @@ class AuthController extends Controller
      */
     public function authenticate(Request $request)
     {
-        $credentials = $request->only('loginfield', 'password');
+        $credentials = $request->only('email', 'password');
         $validator = Validator::make($credentials, [
-            'loginfield' => 'required|max:127',
+            'email' => 'required|max:127',
             'password'   => 'required',
         ]);
         if ($validator->fails()) {
             return ['message' => 'validation', 'errors' => $validator->errors()];
         }
-        $loginfield = $request->loginfield;
-        $field = filter_var($loginfield, FILTER_VALIDATE_EMAIL) ? 'email' : 'name';
-        if (Auth::attempt([$field => $loginfield, 'password' => $request->password])) {
+
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $token = Auth::user()->getToken();
             return ['message' => 'success', 'token' => $token];
         }
