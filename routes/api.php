@@ -19,6 +19,10 @@ Route::group(['prefix' => 'user'], function() {
 	Route::post('auth', 'AuthController@authenticate');
 	Route::post('reset/store', 'AuthController@performPasswordReset');
 	Route::post('reset', 'AuthController@sendPasswordReset');
+	Route::group(['middleware' => 'jwt.auth'], function() {
+		Route::get('token', 'AuthController@checkFacebookToken');
+		Route::post('token', 'AuthController@addFacebookToken');
+	});
 });
 
 Route::group(['prefix' => 'bot', 'middleware' => 'jwt.auth'], function() {

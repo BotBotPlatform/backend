@@ -99,4 +99,27 @@ class AuthController extends Controller
 
         return ['message' => 'success'];
     }
+
+    public function checkFacebookToken(Request $request) {
+        $user = Auth::user();
+        if(!$user->facebook_token) {
+          return ['message' => 'no_token'];
+        } else {
+          return ['message' => 'success', 'token' => $user->facebook_token];
+        }
+    }
+
+    public function addFacebookToken(Request $request) {
+        $validator = Validator::make($request->all(), [
+          'facebook_token' => 'required'
+        ]);
+        if ($validator->fails()) {
+            return ['message' => 'validation', 'errors' => $validator->errors()];
+        }
+        $user = Auth::user();
+        $user->facebook_token = $request->facebook_token;
+        $user->save();
+        return ['message' => 'success', 'user' => $user];
+    }
+
 }
