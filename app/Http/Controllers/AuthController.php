@@ -60,7 +60,9 @@ class AuthController extends Controller
             $token = Auth::user()->getToken();
             return ['message' => 'success', 'token' => $token];
         }
-        return response()->json(['message' => 'invalid_credentials'], 401);
+
+        $validator->getMessageBag()->add('credentials', 'Invalid Email or Password');
+        return response()->json(['message' => 'validation', 'errors' => $validator->errors()],401);
     }
 
     public function sendPasswordReset(Request $request)
