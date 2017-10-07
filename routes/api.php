@@ -32,6 +32,7 @@ Route::group(['prefix' => 'bot', 'middleware' => 'jwt.auth'], function() {
 	Route::post('spinUp', 'BotController@spinUpBot');
 	Route::post('shutDown', 'BotController@shutDownBot');
 	Route::post('reloadBot', 'BotController@reloadBot');
+	Route::get('admin', 'BotController@getBotData');
 });
 
 //Forwarding for bots

@@ -5,12 +5,15 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Validator;
 use App\Models\Bot;
+use App\Models\User;
 use Uuid;
 use Auth;
 use App\Jobs\SpinUpBot;
 use App\Jobs\ShutDownBot;
 use App\Jobs\ReloadBot;
 use \GuzzleHttp\Client;
+use Symfony\Component\Process\Process;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class BotController extends Controller
 {
@@ -106,5 +109,36 @@ class BotController extends Controller
         'auth' => ['user', 'pass']
     ]);
     return $res->getBody();
+  }
+
+  public function getBotData(Request $request) {
+    //Check admin permissions
+    if(!PermissionsController::hasRole('admin')) {
+      return response()->json(['message' => 'insufficient_permissions'], 403);
+    }
+
+    $listCommand = "pm2 jlist";
+    $process = new Process($listCommand);
+    $process->run();
+    if (!$process->isSuccessful()) {
+      return response()->json(['message' => 'pm2_error'], 500);
+    }
+    $botInformation = json_decode($process->getOutput());
+    $output = [];
+    foreach($botInformation as $bot) {
+      array_push($output,[
+        'name' => $bot->name,
+        'uptime' => $bot->pm2_env->pm_uptime,
+        'status' => $bot->pm2_env->status,
+        'creation_time' => $bot->pm2_env->created_at,
+        'crash_count' => $bot->pm2_env->unstable_restarts,
+        'restart_count' => $bot->pm2_env->restart_time,
+        'output_log_path' => $bot->pm2_env->pm_out_log_path,
+        'error_log_path' => $bot->pm2_env->pm_err_log_path,
+        'memory_usage' => $bot->monit->memory,
+        'cpu_usage' => $bot->monit->cpu,
+      ]);
+    }
+    return $output;
   }
 }
