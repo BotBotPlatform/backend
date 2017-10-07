@@ -111,12 +111,7 @@ class BotController extends Controller
     return $res->getBody();
   }
 
-  public function getBotData(Request $request) {
-    //Check admin permissions
-    if(!PermissionsController::hasRole('admin')) {
-      return response()->json(['message' => 'insufficient_permissions'], 403);
-    }
-
+  public static function dumpProcessData() {
     $listCommand = "pm2 jlist";
     $process = new Process($listCommand);
     $process->run();
@@ -126,7 +121,7 @@ class BotController extends Controller
     $botInformation = json_decode($process->getOutput());
     $output = [];
     foreach($botInformation as $bot) {
-      array_push($output,[
+      $output[$bot->name] = [
         'name' => $bot->name,
         'uptime' => $bot->pm2_env->pm_uptime,
         'status' => $bot->pm2_env->status,
@@ -137,8 +132,52 @@ class BotController extends Controller
         'error_log_path' => $bot->pm2_env->pm_err_log_path,
         'memory_usage' => $bot->monit->memory,
         'cpu_usage' => $bot->monit->cpu,
-      ]);
+      ];
     }
     return $output;
+  }
+
+  public function getBotData(Request $request) {
+    //Check admin permissions
+    if(!PermissionsController::hasRole('admin')) {
+      return response()->json(['message' => 'insufficient_permissions'], 403);
+    }
+    return BotController::dumpProcessData();
+  }
+
+  public function getBotOutputLog(Request $request, $bot_id) {
+    //Check admin permissions
+    if(!PermissionsController::hasRole('admin')) {
+      return response()->json(['message' => 'insufficient_permissions'], 403);
+    }
+    $bot = Bot::where('id',$bot_id)->first();
+    if(count($bot) <= 0) {
+      return response()->json(['message' => 'invalid_id'], 404);
+    }
+
+    $botData = $bot->getData();
+    if(!$botData) {
+      return response()->json(['message' => 'no_data'], 400);
+    }
+    $fileContents = File::get($botData->output_log_path);
+    return $fileContents;
+  }
+
+  public function getBotErrorLog(Request $request, $bot_id) {
+    //Check admin permissions
+    if(!PermissionsController::hasRole('admin')) {
+      return response()->json(['message' => 'insufficient_permissions'], 403);
+    }
+    $bot = Bot::where('id',$bot_id)->first();
+    if(count($bot) <= 0) {
+      return response()->json(['message' => 'invalid_id'], 404);
+    }
+
+    $botData = $bot->getData();
+    if(!$botData) {
+      return response()->json(['message' => 'no_data'], 400);
+    }
+    $fileContents = File::get($botData->error_log_path);
+    return $fileContents;
   }
 }
