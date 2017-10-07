@@ -33,8 +33,8 @@ Route::group(['prefix' => 'bot', 'middleware' => 'jwt.auth'], function() {
 	Route::post('shutDown', 'BotController@shutDownBot');
 	Route::post('reloadBot', 'BotController@reloadBot');
 	Route::get('admin', 'BotController@getBotData');
-	Route::get('admin/{bot_id}/outputlogs', 'BotController@getBotOutputLog');
-	Route::get('admin/{bot_id}/errorlogs', 'BotController@getBotErrorLog');
+	Route::get('admin/{bot_uuid}/outputlogs', 'BotController@getBotOutputLog');
+	Route::get('admin/{bot_uuid}/errorlogs', 'BotController@getBotErrorLog');
 });
 
 //Forwarding for bots

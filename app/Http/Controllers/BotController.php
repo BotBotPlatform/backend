@@ -145,12 +145,12 @@ class BotController extends Controller
     return BotController::dumpProcessData();
   }
 
-  public function getBotOutputLog(Request $request, $bot_id) {
+  public function getBotOutputLog(Request $request, $bot_uuid) {
     //Check admin permissions
     if(!PermissionsController::hasRole('admin')) {
       return response()->json(['message' => 'insufficient_permissions'], 403);
     }
-    $bot = Bot::where('id',$bot_id)->first();
+    $bot = Bot::where('uuid',$bot_uuid)->first();
     if(count($bot) <= 0) {
       return response()->json(['message' => 'invalid_id'], 404);
     }
@@ -163,12 +163,12 @@ class BotController extends Controller
     return $fileContents;
   }
 
-  public function getBotErrorLog(Request $request, $bot_id) {
+  public function getBotErrorLog(Request $request, $bot_uuid) {
     //Check admin permissions
     if(!PermissionsController::hasRole('admin')) {
       return response()->json(['message' => 'insufficient_permissions'], 403);
     }
-    $bot = Bot::where('id',$bot_id)->first();
+    $bot = Bot::where('uuid',$bot_uuid)->first();
     if(count($bot) <= 0) {
       return response()->json(['message' => 'invalid_id'], 404);
     }
