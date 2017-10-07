@@ -143,7 +143,19 @@ class BotController extends Controller
     if(!PermissionsController::hasRole('admin')) {
       return response()->json(['message' => 'insufficient_permissions'], 403);
     }
-    return BotController::dumpProcessData();
+    $procData = BotController::dumpProcessData();
+    $bots = Bot::with('user')->get();
+    $output = [];
+    foreach($bots as $bot) {
+      // array_push($output,get_object_vars($bot));
+      if(array_key_exists($bot->uuid,$procData)) {
+        $bot['process_data'] = $procData[$bot->uuid];
+      } else {
+        $bot['process_data'] = null;
+      }
+    }
+    return $bots;
+
   }
 
   public function getBotOutputLog(Request $request, $bot_uuid) {
