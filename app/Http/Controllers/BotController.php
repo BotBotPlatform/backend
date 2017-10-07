@@ -14,6 +14,7 @@ use App\Jobs\ReloadBot;
 use \GuzzleHttp\Client;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
+use File;
 
 class BotController extends Controller
 {
@@ -159,7 +160,7 @@ class BotController extends Controller
     if(!$botData) {
       return response()->json(['message' => 'no_data'], 400);
     }
-    $fileContents = File::get($botData->output_log_path);
+    $fileContents = File::get($botData['output_log_path']);
     return $fileContents;
   }
 
@@ -177,7 +178,7 @@ class BotController extends Controller
     if(!$botData) {
       return response()->json(['message' => 'no_data'], 400);
     }
-    $fileContents = File::get($botData->error_log_path);
+    $fileContents = File::get($botData['error_log_path']);
     return $fileContents;
   }
 }
