@@ -33,6 +33,7 @@ class AuthController extends Controller
         $user = new User;
         $user->password = Hash::make($request->password);
         $user->email = $request->email;
+        $user->verification_token = str_random(20);
         $user->save();
         $user->postSignupActions();
         $token = $user->getToken();
@@ -104,11 +105,10 @@ class AuthController extends Controller
 
     public function checkFacebookToken(Request $request) {
         $user = Auth::user();
-        if(!$user->facebook_token) {
-          return ['message' => 'no_token'];
-        } else {
-          return ['message' => 'success', 'token' => $user->facebook_token];
-        }
+        return [
+          'facebook_token' => $user->facebook_token,
+          'verification_token' => $user->verification_token
+        ];
     }
 
     public function addFacebookToken(Request $request) {
