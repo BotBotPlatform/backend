@@ -23,4 +23,8 @@ class Bot extends Model
       return null; //There is no pm2 process
     }
   }
+
+  public function feedbackCategories() {
+    return $this->hasMany('App\Models\FeedbackCategory');
+  }
 }

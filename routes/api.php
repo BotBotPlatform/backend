@@ -37,6 +37,19 @@ Route::group(['prefix' => 'bot', 'middleware' => 'jwt.auth'], function() {
 	Route::get('admin/{bot_uuid}/errorlogs', 'BotController@getBotErrorLog');
 });
 
+Route::group(['prefix' => 'feedback'], function() {
+	//Public Endpoints
+	Route::post('', 'FeedbackController@createFeedback');
+
+	//Authenticated Endpoints
+	Route::group(['middleware' => 'jwt.auth'], function() {
+		Route::get('', 'FeedbackController@getFeedback');
+		Route::get('category', 'FeedbackController@getFeedbackCategories');
+		Route::post('category', 'FeedbackController@createFeedbackCategory');
+	});
+
+});
+
 //Forwarding for bots
 Route::group(['prefix' => 'facebook'], function() {
 	Route::get('{uuid}', 'BotController@forwardBotMessage');
