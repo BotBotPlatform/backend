@@ -23,6 +23,9 @@ class CreateBotsTable extends Migration
 
           $table->boolean('bot_enabled')->default(false);
           $table->boolean('shopify_enabled')->default(false);
+          $table->boolean('reservations_enabled')->default(false);
+          $table->boolean('feedback_enabled')->default(false);
+          $table->boolean('customer_support_enabled')->default(false);
 
           $table->integer('user_id')->unsigned();
           $table->foreign('user_id')->references('id')->on('users')

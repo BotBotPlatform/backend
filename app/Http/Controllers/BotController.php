@@ -66,6 +66,29 @@ class BotController extends Controller
       return ['message' => 'success'];
   }
 
+  /**
+   * Create a bot
+  */
+  public function toggleBotFeatures(Request $request) {
+      $validator = Validator::make($request->all(), [
+        'feature_name' => 'required|in:bot_enabled,shopify_enabled,reservations_enabled,feedback_enabled,customer_support_enabled',
+        'enabled' => 'required|boolean'
+      ]);
+      if ($validator->fails()) {
+          return ['message' => 'validation', 'errors' => $validator->errors()];
+      }
+
+      //Does this user already have a bot?
+      if(count(Auth::user()->bot) <= 0) {
+        return response()->json(['message' => 'no_bot_exists'],400);
+      }
+      
+      $bot = Auth::user()->bot;
+      $bot[$request->feature_name] = $request->enabled;
+      $bot->save();
+      return ['message' => 'success', 'bot' => $bot];
+  }
+
   public function spinUpBot(Request $request) {
     $this->dispatch(new SpinUpBot(Auth::user()));
     return ['message' => 'success'];
@@ -93,6 +116,23 @@ class BotController extends Controller
       }
     }
 
+  }
+
+  public function authenticateBot(Request $request) {
+    //Make sure the verification token matches
+    $bot = Bot::where('uuid',$request->uuid)->first();
+    $hub = json_decode($request->hub);
+    if($hub->mode && $hub->verify_token) {
+      if($hub->verify_token == $bot->verify_token) {
+        //Send back the challenge
+        return response($hub->challenge);
+      } else {
+        //This does not match ruh roh
+        return response("invalid_auth",403);
+      }
+    } else {
+      return response("invalid_request",400);
+    }
   }
 
   public function forwardBotMessage(Request $request) {

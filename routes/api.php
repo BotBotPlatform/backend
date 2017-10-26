@@ -35,6 +35,8 @@ Route::group(['prefix' => 'bot', 'middleware' => 'jwt.auth'], function() {
 	Route::get('admin', 'BotController@getBotData');
 	Route::get('admin/{bot_uuid}/outputlogs', 'BotController@getBotOutputLog');
 	Route::get('admin/{bot_uuid}/errorlogs', 'BotController@getBotErrorLog');
+	Route::post('/toggleFeature', 'BotController@toggleBotFeatures');
+
 });
 
 Route::group(['prefix' => 'feedback'], function() {
@@ -52,5 +54,6 @@ Route::group(['prefix' => 'feedback'], function() {
 
 //Forwarding for bots
 Route::group(['prefix' => 'facebook'], function() {
-	Route::get('{uuid}', 'BotController@forwardBotMessage');
+	Route::get('{uuid}', 'BotController@authenticateBot');
+	Route::post('{uuid}', 'BotController@forwardBotMessage');
 });
