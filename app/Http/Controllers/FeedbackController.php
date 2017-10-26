@@ -33,6 +33,27 @@ class FeedbackController extends Controller
       return ['message' => 'success', 'category' => $category];
   }
 
+  /**
+   * Create a bot
+ */
+  public function deleteFeedbackCategory(Request $request) {
+      $validator = Validator::make($request->all(), [
+          'id' => 'required|exists:feedback_category,id',
+      ]);
+      if ($validator->fails()) {
+          return ['message' => 'validation', 'errors' => $validator->errors()];
+      }
+
+      //Does this user have a bot?
+      if(count(Auth::user()->bot) <= 0) {
+        return response()->json(['message' => 'no_bot_exists'],400);
+      }
+
+      $category = FeedbackCategory::where('id',$request->id)->first();
+      $category->delete();
+      return ['message' => 'success'];
+  }
+
   public function getFeedbackCategories(Request $request) {
       $validator = Validator::make($request->all(), [
       ]);

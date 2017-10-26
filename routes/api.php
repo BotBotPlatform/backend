@@ -48,6 +48,7 @@ Route::group(['prefix' => 'feedback'], function() {
 		Route::get('', 'FeedbackController@getFeedback');
 		Route::get('category', 'FeedbackController@getFeedbackCategories');
 		Route::post('category', 'FeedbackController@createFeedbackCategory');
+		Route::post('category/delete', 'FeedbackController@deleteFeedbackCategory');
 	});
 
 });
