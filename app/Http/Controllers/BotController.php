@@ -82,7 +82,7 @@ class BotController extends Controller
       if(count(Auth::user()->bot) <= 0) {
         return response()->json(['message' => 'no_bot_exists'],400);
       }
-      
+
       $bot = Auth::user()->bot;
       $bot[$request->feature_name] = $request->enabled;
       $bot->save();
@@ -121,11 +121,10 @@ class BotController extends Controller
   public function authenticateBot(Request $request) {
     //Make sure the verification token matches
     $bot = Bot::where('uuid',$request->uuid)->first();
-    $hub = json_decode($request->hub);
-    if($hub->mode && $hub->verify_token) {
-      if($hub->verify_token == $bot->verify_token) {
+    if($request->hub_mode && $request->hub_verify_token) {
+      if($request->hub_verify_token == $bot->user->verification_token) {
         //Send back the challenge
-        return response($hub->challenge);
+        return response($request->hub_challenge);
       } else {
         //This does not match ruh roh
         return response("invalid_auth",403);
