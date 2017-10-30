@@ -148,7 +148,7 @@ class BotController extends Controller
     $res = $client->request('POST', 'localhost:'.$bot->port, [
         'json' => [
           'object' => $request->object,
-          'entries' => $request->entries,
+          'entry' => $request->entry,
         ]
     ]);
     return $res->getBody();
