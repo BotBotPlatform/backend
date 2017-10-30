@@ -146,7 +146,10 @@ class BotController extends Controller
     //Forward this request to a local node instance
     $client = new Client();
     $res = $client->request('POST', 'localhost:'.$bot->port, [
-        'auth' => ['user', 'pass']
+        'json' => [
+          'object' => $request->object,
+          'entries' => $request->entries,
+        ]
     ]);
     return $res->getBody();
   }
