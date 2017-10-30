@@ -13,6 +13,7 @@ use App\Http\Controllers\BotController;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Exception;
+use Log;
 
 class SpinUpBot implements ShouldQueue
 {
@@ -46,6 +47,7 @@ class SpinUpBot implements ShouldQueue
         $newPort = BotController::getFreePort();
         $jwtToken = $this->user->getToken();
         $downloadCommand = "pm2 start ".getenv('NODE_PATH')." --name=".$bot->uuid." -- ".$newPort." ".$jwtToken;
+        Log::debug("Startup command is: ".$downloadCommand);
         $process = new Process($downloadCommand);
         $process->run();
         if (!$process->isSuccessful()) {
