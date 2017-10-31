@@ -61,6 +61,8 @@ Route::group(['prefix' => 'appointment'], function() {
 	Route::group(['middleware' => 'jwt.auth'], function() {
 		Route::post('', 'AppointmentController@createAppointment');
 		Route::get('', 'AppointmentController@getAppointments');
+		Route::get('/hours', 'AppointmentController@getBusinessHours');
+		Route::post('/hours', 'AppointmentController@setBusinessHours');
 	});
 });
 

@@ -26,6 +26,8 @@ class CreateBotsTable extends Migration
           $table->boolean('reservations_enabled')->default(false);
           $table->boolean('feedback_enabled')->default(false);
           $table->boolean('customer_support_enabled')->default(false);
+          $table->integer('business_hours_min')->unsigned()->default('9');
+          $table->integer('business_hours_max')->unsigned()->default('17');
 
           $table->integer('user_id')->unsigned();
           $table->foreign('user_id')->references('id')->on('users')
