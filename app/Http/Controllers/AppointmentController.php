@@ -28,9 +28,9 @@ class AppointmentController extends Controller
 
       //Is this timestamp during business hours?
       $bot = Auth::user()->bot;
-      $start = $bot->business_hours_min.":00";
-      $end   = $bot->business_hours_max.":00";
-      $time  = $carbonTimestamp->format('H:i');
+      $start = $bot->business_hours_min."00";
+      $end   = $bot->business_hours_max."00";
+      $time  = $carbonTimestamp->format('Hi');
 
       if (!($time > $start && $time < $end)) {
         $validator->errors()->add('timestamp', 'timestamp must be within business hours');
