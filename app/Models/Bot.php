@@ -27,4 +27,8 @@ class Bot extends Model
   public function feedbackCategories() {
     return $this->hasMany('App\Models\FeedbackCategory');
   }
+
+  public function appointments() {
+    return $this->hasMany('App\Models\Appointment');
+  }
 }

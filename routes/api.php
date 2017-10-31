@@ -39,6 +39,7 @@ Route::group(['prefix' => 'bot', 'middleware' => 'jwt.auth'], function() {
 
 });
 
+//Feedback endpoints
 Route::group(['prefix' => 'feedback'], function() {
 	//Public Endpoints
 	Route::post('', 'FeedbackController@createFeedback');
@@ -50,7 +51,17 @@ Route::group(['prefix' => 'feedback'], function() {
 		Route::post('category', 'FeedbackController@createFeedbackCategory');
 		Route::post('category/delete', 'FeedbackController@deleteFeedbackCategory');
 	});
+});
 
+//Appointment endpoints
+Route::group(['prefix' => 'appointment'], function() {
+	//Public Endpoints
+
+	//Authenticated Endpoints
+	Route::group(['middleware' => 'jwt.auth'], function() {
+		Route::post('', 'AppointmentController@createAppointment');
+		Route::get('', 'AppointmentController@getAppointments');
+	});
 });
 
 //Forwarding for bots
