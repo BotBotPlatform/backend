@@ -56,7 +56,7 @@ Route::group(['prefix' => 'feedback'], function() {
 //Appointment endpoints
 Route::group(['prefix' => 'appointment'], function() {
 	//Public Endpoints
-
+	Route::get('/calendar/{uuid}', 'AppointmentController@generateCalendarForBot');
 	//Authenticated Endpoints
 	Route::group(['middleware' => 'jwt.auth'], function() {
 		Route::post('', 'AppointmentController@createAppointment');

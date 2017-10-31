@@ -8,6 +8,7 @@ use App\Models\Appointment;
 use App\Models\Bot;
 use Carbon\Carbon;
 use Auth;
+use \Eluceo\iCal\Component\Calendar;
 
 class AppointmentController extends Controller
 {
@@ -94,5 +95,39 @@ class AppointmentController extends Controller
       $bot->business_hours_max = $request->max_hour;
       $bot->save();
       return ['message' => 'success', 'min_hour' => $bot->business_hours_min,  'max_hour' => $bot->business_hours_max];
+  }
+
+  public function generateCalendarForBot(Request $request) {
+      $bot = Bot::where('uuid', '=', $request->uuid)->first();
+      if(count($bot) <= 0) {
+        return "invalid url";
+      }
+
+      $vCalendar = new Calendar('www.example.com');
+      $appointments = $bot->appointments;
+
+      // Iterate through all sections
+      foreach($appointments as $appointment) {
+          // Iterate through all events
+          $vEvent = new \Eluceo\iCal\Component\Event();
+          $startTime = new Carbon($appointment->timestamp);
+          $endTime = new Carbon($appointment->timestamp);
+          $endTime->addHours(1);
+          $vEvent
+              ->setDtStart(new \DateTime($startTime))
+              ->setDtEnd(new \DateTime($endTime))
+              ->setNoTime(false)
+              ->setSummary("BotBot Event");
+          $vCalendar->addComponent($vEvent);
+      }
+      // Headers that might not actually do anything
+      header( 'Expires: Sat, 26 Jul 1997 05:00:00 GMT' ); //date in the past
+      header( 'Last-Modified: ' . gmdate( 'D, d M Y H:i:s' ) . ' GMT' ); //tell it we just updated
+      header( 'Cache-Control: no-store, no-cache, must-revalidate' ); //force revaidation
+      header( 'Cache-Control: post-check=0, pre-check=0', false );
+      header( 'Pragma: no-cache' );
+      header('Content-Type: text/calendar; charset=utf-8');
+      header('Content-Disposition: attachment; filename="cal.ics"');
+      echo $vCalendar->render();
   }
 }
