@@ -66,6 +66,12 @@ Route::group(['prefix' => 'appointment'], function() {
 	});
 });
 
+//Shop endpoints
+Route::group(['prefix' => 'shop'], function() {
+	//Public Endpoints
+	Route::get('getItems/{provider}/{shop}', 'ShopController@getShop');
+});
+
 //Forwarding for bots
 Route::group(['prefix' => 'facebook'], function() {
 	Route::get('{uuid}', 'BotController@authenticateBot');
