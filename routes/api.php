@@ -68,8 +68,11 @@ Route::group(['prefix' => 'appointment'], function() {
 
 //Shop endpoints
 Route::group(['prefix' => 'shop'], function() {
-	//Public Endpoints
-	Route::get('getItems/{provider}/{shop}', 'ShopController@getShop');
+	//Authenticated Endpoints
+	Route::group(['middleware' => 'jwt.auth'], function() {
+		Route::post('getItems', 'ShopController@getShop');
+		Route::post('set', 'ShopController@setShopUrl');
+	});
 });
 
 //Forwarding for bots
