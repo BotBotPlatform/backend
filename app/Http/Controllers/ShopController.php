@@ -27,6 +27,9 @@ class ShopController extends Controller
   }
 
   public function getShop(Request $request) {
+    if(empty(Auth::user()->bot->shop)) {
+      return ['message' => 'No shop configured'];
+    }
     return $this->getShopByUrl(Auth::user()->bot->shop);
   }
 

@@ -70,7 +70,7 @@ Route::group(['prefix' => 'appointment'], function() {
 Route::group(['prefix' => 'shop'], function() {
 	//Authenticated Endpoints
 	Route::group(['middleware' => 'jwt.auth'], function() {
-		Route::post('getItems', 'ShopController@getShop');
+		Route::get('getItems', 'ShopController@getShop');
 		Route::post('set', 'ShopController@setShopUrl');
 	});
 });
