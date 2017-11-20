@@ -66,6 +66,15 @@ Route::group(['prefix' => 'appointment'], function() {
 	});
 });
 
+//Shop endpoints
+Route::group(['prefix' => 'shop'], function() {
+	//Authenticated Endpoints
+	Route::group(['middleware' => 'jwt.auth'], function() {
+		Route::get('getItems', 'ShopController@getShop');
+		Route::post('set', 'ShopController@setShopUrl');
+	});
+});
+
 //Forwarding for bots
 Route::group(['prefix' => 'facebook'], function() {
 	Route::get('{uuid}', 'BotController@authenticateBot');
