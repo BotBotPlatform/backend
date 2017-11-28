@@ -66,6 +66,16 @@ Route::group(['prefix' => 'appointment'], function() {
 	});
 });
 
+//Support Ticket endpoints
+Route::group(['prefix' => 'tickets'], function() {
+	//Authenticated Endpoints
+	Route::group(['middleware' => 'jwt.auth'], function() {
+		Route::get('', 'SupportController@getSupportTickets');
+		Route::post('', 'SupportController@createSupportTicket');
+		Route::post('/{ticket_id}/resolve', 'SupportController@resolveSupportTicket');
+	});
+});
+
 //Shop endpoints
 Route::group(['prefix' => 'shop'], function() {
 	//Authenticated Endpoints

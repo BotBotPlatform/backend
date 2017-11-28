@@ -31,4 +31,8 @@ class Bot extends Model
   public function appointments() {
     return $this->hasMany('App\Models\Appointment');
   }
+
+  public function tickets() {
+    return $this->hasMany('App\Models\SupportTicket');
+  }
 }
