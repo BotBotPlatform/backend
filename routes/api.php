@@ -82,6 +82,7 @@ Route::group(['prefix' => 'shop'], function() {
 	Route::group(['middleware' => 'jwt.auth'], function() {
 		Route::get('getItems', 'ShopController@getShop');
 		Route::post('set', 'ShopController@setShopUrl');
+		Route::get('name', 'ShopController@getShopName');
 	});
 });
 

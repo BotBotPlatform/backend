@@ -52,4 +52,11 @@ class ShopController extends Controller
       return ['message' => 'success', 'shop' => $bot->shop];
   }
 
+  public function getShopName() {
+    if(Auth::user()->bot->shop) {
+      return ['message' => 'success', 'shop' => Auth::user()->bot->shop];
+    }
+    return ['message' => 'No shop configured'];
+  }
+
 }
