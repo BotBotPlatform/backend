@@ -9,11 +9,16 @@ use Carbon\Carbon;
 use Auth;
 use Goutte\Client;
 use Symfony\Component\DomCrawler\Crawler;
+use Illuminate\Support\Facades\Cache;
 
 class ShopController extends Controller
 {
   public function getShopByUrl($shop) {
     $provider = "etsy";
+    if(Cache::store('file')->has($shop)) {
+      return Cache::store('file')->get($shop);
+    }
+
     $client = new Client();
     // TODO transformations upon request items tthen pass to Goutte
     $crawler = $client->request('GET', "https://" . $provider . ".com/shop/" . $shop);
@@ -24,6 +29,7 @@ class ShopController extends Controller
         $url = $node->filter('a')->attr('href');
         return ['img' => $img, 'title' => $title, 'price' => $price, 'url' => $url];
     });
+    Cache::store('file')->put($shop, $nodeValues, Carbon::now()->addHours(1));
     return $nodeValues;    
   }
 
