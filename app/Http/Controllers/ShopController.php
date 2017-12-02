@@ -21,7 +21,8 @@ class ShopController extends Controller
         $img = $node->filter('.placeholder-content')->children()->eq(0)->attr('src');
         $title = trim($node->filter('.card-title')->text());
         $price = trim($node->filter('.currency')->text());
-        return ['img' => $img, 'title' => $title, 'price' => $price];
+        $url = $node->filter('a')->attr('href');
+        return ['img' => $img, 'title' => $title, 'price' => $price, 'url' => $url];
     });
     return $nodeValues;    
   }
