@@ -11,7 +11,9 @@ class SupportController extends Controller
 {
   public function createSupportTicket(Request $request) {
       $validator = Validator::make($request->all(), [
-        'message' => 'required|'
+        'message' => 'required',
+        'messenger_userid' => 'required',
+        'name' => 'required'
       ]);
       if ($validator->fails()) {
           return ['message' => 'validation', 'errors' => $validator->errors()];
@@ -25,6 +27,8 @@ class SupportController extends Controller
       $bot = Auth::user()->bot;
       $ticket = new SupportTicket;
       $ticket->message = $request->message;
+      $ticket->messenger_userid = $request->messenger_userid;
+      $ticket->name = $request->name;
       $ticket->bot_id = Auth::user()->bot->id;
       $ticket->save();
       return ['message' => 'success', 'ticket' => $ticket];
