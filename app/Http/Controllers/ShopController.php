@@ -9,11 +9,16 @@ use Carbon\Carbon;
 use Auth;
 use Goutte\Client;
 use Symfony\Component\DomCrawler\Crawler;
+use Illuminate\Support\Facades\Cache;
 
 class ShopController extends Controller
 {
   public function getShopByUrl($shop) {
     $provider = "etsy";
+    if(Cache::store('file')->has($shop)) {
+      return Cache::store('file')->get($shop);
+    }
+
     $client = new Client();
     // TODO transformations upon request items tthen pass to Goutte
     $crawler = $client->request('GET', "https://" . $provider . ".com/shop/" . $shop);
@@ -21,8 +26,10 @@ class ShopController extends Controller
         $img = $node->filter('.placeholder-content')->children()->eq(0)->attr('src');
         $title = trim($node->filter('.card-title')->text());
         $price = trim($node->filter('.currency')->text());
-        return ['img' => $img, 'title' => $title, 'price' => $price];
+        $url = $node->filter('a')->attr('href');
+        return ['img' => $img, 'title' => $title, 'price' => $price, 'url' => $url];
     });
+    Cache::store('file')->put($shop, $nodeValues, Carbon::now()->addHours(1));
     return $nodeValues;    
   }
 
@@ -50,6 +57,13 @@ class ShopController extends Controller
       $bot->shop = $request->shop;
       $bot->save();
       return ['message' => 'success', 'shop' => $bot->shop];
+  }
+
+  public function getShopName() {
+    if(Auth::user()->bot->shop) {
+      return ['message' => 'success', 'shop' => Auth::user()->bot->shop];
+    }
+    return ['message' => 'No shop configured'];
   }
 
 }
